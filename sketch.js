@@ -4,7 +4,7 @@ let aliensLine1 = []
 let aliensLine2 = []
 let aliensLine3 = []
 let aliensLine4 = []
-let barricadeLine1 =[]
+let barricades =[]
 
 function preload(){
     ship_0 = loadImage("ressources/ship_0.png");
@@ -12,7 +12,7 @@ function preload(){
     ship_2 = loadImage("ressources/ship_2.png");
     alien_0 = loadImage("ressources/alien_0.png");
     alien_1 = loadImage("ressources/alien_1.png");
-    skumfidus_0 = loadImage("ressources/skumfidus_0.png");
+    skumfidus_0 = loadImage("ressources/skumfidus_0.png"); 
     skumfidus_1 = loadImage("ressources/skumfidus_1.png");
     Chunk_0 = loadImage("ressources/Chunk_0.png");
     Chunk_1 = loadImage("ressources/Chunk_1.png");
@@ -21,77 +21,62 @@ function preload(){
     Barricade_2 = loadImage("ressources/Barricade_2.png");
 }
 
-let ship
-let ship_0, ship_1, ship_2
+let ship;
+let ship_0, ship_1, ship_2;
 
 function setup() {
-    
     createCanvas(1000, 600);
-    background(0)
+    background(0);
     ship = new Ship(width/2-10,height-100);
    
     ship.draw();
 
-    for (let i=0; i<5; i++){
-        aliensLine1[i]=new Alien(90+50*i,20)
-        aliensLine2[i]=new Alien(90+50*i,70)
-        aliensLine3[i]=new Skumfidus(90+50*i,120)
-        aliensLine4[i]=new Chunk(90+50*i,170)
-        
-        barricadeLine1[i]=new Barricade(90+50*i,450)
+    for (let i=0; i<5; i++) {
+        aliensLine1[i]=new Alien(90+50*i,20);
+        aliensLine2[i]=new Alien(90+50*i,70);
+        aliensLine3[i]=new Skumfidus(90+50*i,120);
+        aliensLine4[i]=new Chunk(90+50*i,170);
     }
-    
 
-   // alien = new Alien(width/2-10,20)
-  
-
-
-	
+    // Create barricades
+    for (let i = 0; i < 4; i++) {
+        barricades[i] = new Barricade(120 + 250 * i, 400);
+    }
 }
 
-function draw()
-{
-    background(0)
-    ship.draw()
-    //alien.draw()
-    //alien.update()
-    for (let i=0; i< bullets.length; i++){
+function draw() {
+    background(0);
+    ship.draw();
+
+    for (let i = 0; i < bullets.length; i++) {
         bullets[i].draw();
         bullets[i].update();
-     //   print("before hasHit")
         bullets[i].hasHit(aliensLine1);
         bullets[i].hasHit(aliensLine2);
         bullets[i].hasHit(aliensLine3);
         bullets[i].hasHit(aliensLine4);
-
-        bullets[i].hasHit(barricadeLine1);
-      //  print(i)
-       // print(bullets.length)
-    //    print("after hashit")
-     //  bullets[i].hasHit(aliensLine2);
-
+        bullets[i].hasHit(barricades); // Check for barricade hits
     }
-    for (let i=0;i<5;i++){
-        aliensLine1[i].draw()
-        aliensLine1[i].update()
-        aliensLine2[i].draw()
-        aliensLine2[i].update()
-        aliensLine3[i].draw()
-        aliensLine3[i].update()
-        aliensLine4[i].draw()
-        aliensLine4[i].update()
 
-        barricadeLine1[i].draw()
-        barricadeLine1[i].update()
+    for (let i = 0; i < 5; i++) {
+        aliensLine1[i].draw();
+        aliensLine1[i].update();
+        aliensLine2[i].draw();
+        aliensLine2[i].update();
+        aliensLine3[i].draw();
+        aliensLine3[i].update();
+        aliensLine4[i].draw();
+        aliensLine4[i].update();
     }
-    //print("locationStage "aliensLine1[2].locationStage)
-    //print(aliensLine1[2].x)
-    //print(aliensLine1[2].y)
-    //print(aliensLine1[2].dx)
-    //print(aliensLine1[2])
-    if (aliensLine1[0].y > height) 
-        noLoop()
+
+    for (let i = 0; i < 4; i++) {
+        barricades[i].draw();
+    }
+
+    if (aliensLine1[0].y > height) noLoop();
 }
+
+
 
 class Alien{
     constructor(x,y){
@@ -191,7 +176,8 @@ class Skumfidus{
         
    
     }
-    update(){
+    
+update(){
         if (this.locationStage == 2016 ) {
             this.y+=3
             this.dx = -this.dx
@@ -210,6 +196,7 @@ class Skumfidus{
         }
 
     }
+
 
     
 
@@ -280,33 +267,12 @@ class Chunk{
 
 }
 
-class Barricade{
-    constructor(x,y){
-        this.x = x
-        this.y = y
-        this.barricadeStage=0;
-        this.changeStage = 0;
-        this.alive = true;
-        this.locationStage = 0
-        this.diff_locationStage = 1
-        this.dx = 2
-    }
 
-    draw(){
-        if (this.alive) {
-            image(Barricade_0,this.x,this.y);
-            // if bullet has hit, change image
-        }
-
-        
-    }
-}
 
 function keyPressed() {
-   if (keyCode === 32) {
-        ship.fire()
-    }
-
+  if (keyCode === 32) {
+    ship.fire();
+  }
 }
 
 
@@ -425,7 +391,22 @@ hasHit(Barricade){
 }
 
 
+class Barricade {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.alive = true;
+    }
+  
+    draw() {
+      if (this.alive) {
+        // Draw barricade using your barricade images
+        image(Barricade_0, this.x, this.y);
+        // You can add more stages for barricade damage if needed
 
+      }
+    }
+  }
 
 
 
