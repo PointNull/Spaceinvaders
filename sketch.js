@@ -6,6 +6,7 @@ let aliensLine3 = []
 let aliensLine4 = []
 let barricades =[]
 
+//preload af vores aliens, ship og barrikade
 function preload(){
     ship_0 = loadImage("ressources/ship_0.png");
     ship_1 = loadImage("ressources/ship_1.png");
@@ -21,16 +22,18 @@ function preload(){
     Barricade_2 = loadImage("ressources/Barricade_2.png");
 }
 
+//vi angiver at vores rumskib er et objekt + vi angiver de forskellige rumskibe (animation)
 let ship;
 let ship_0, ship_1, ship_2;
 
+//vi tegner vores canvas for spillet og laver vores rumskib
 function setup() {
     createCanvas(1000, 600);
     background(0);
     ship = new Ship(width/2-10,height-100);
-   
+   // vi tegner vores rumskib med denne draw funktion
     ship.draw();
-
+//alle vores aliens bliver tildelt forskellige linjer at være på
     for (let i=0; i<5; i++) {
         aliensLine1[i]=new Alien(90+50*i,20);
         aliensLine2[i]=new Alien(90+50*i,70);
@@ -38,7 +41,7 @@ function setup() {
         aliensLine4[i]=new Chunk(90+50*i,170);
     }
 
-    // Create barricades
+    // vores barrikade får tildelt sin linje
     for (let i = 0; i < 4; i++) {
         barricades[i] = new Barricade(120 + 250 * i, 400);
     }
@@ -47,7 +50,7 @@ function setup() {
 function draw() {
     background(0);
     ship.draw();
-
+//checker om de forskellige objekter er blevet ramt
     for (let i = 0; i < bullets.length; i++) {
         bullets[i].draw();
         bullets[i].update();
@@ -55,9 +58,9 @@ function draw() {
         bullets[i].hasHit(aliensLine2);
         bullets[i].hasHit(aliensLine3);
         bullets[i].hasHit(aliensLine4);
-        bullets[i].hasHit(barricades); // Check for barricade hits
+        bullets[i].hasHit(barricades); 
     }
-
+//updaterer vores aliens hver gang de rykker sig
     for (let i = 0; i < 5; i++) {
         aliensLine1[i].draw();
         aliensLine1[i].update();
@@ -68,16 +71,16 @@ function draw() {
         aliensLine4[i].draw();
         aliensLine4[i].update();
     }
-
+//tegner vores barrikader
     for (let i = 0; i < 4; i++) {
         barricades[i].draw();
     }
-
+// stopper spillet hvis vores aliens rammer bunden af vores canvas
     if (aliensLine1[0].y > height) noLoop();
 }
 
 
-
+//vores alien klasse
 class Alien{
     constructor(x,y){
         this.x = x
@@ -90,7 +93,7 @@ class Alien{
         this.dx = 2
        
     }
-
+//tegner de forskellige stadier af vores aliens, så de ligner at de bevæger sig
     draw(){
         if (this.alive) {
             if (this.alienStage == 0){
@@ -98,7 +101,7 @@ class Alien{
             }
             else {
                 image(alien_1,this.x,this.y);
-            // this.changeStage++            
+            // kode som håndterer de animation for vores aliens          
             }           
             if (this.changeStage==0){
                 this.alienStage++;
@@ -139,7 +142,7 @@ class Alien{
 
 
 }
-
+//vores anden alien klasse som kører den samme struktur som den første alien klasse
 class Skumfidus{
     constructor(x,y){
         this.x = x
@@ -203,7 +206,7 @@ update(){
 
 
 }
-
+//vores tredje alien klasse som kører den samme struktur som den første alien klasse
 class Chunk{
     constructor(x,y){
         this.x = x
@@ -268,14 +271,14 @@ class Chunk{
 }
 
 
-
+//funktion for at vores rumskib kan skyde
 function keyPressed() {
   if (keyCode === 32) {
     ship.fire();
   }
 }
 
-
+//vores rumskib klasse
 class Ship{
     constructor(x,y){
         this.x = x;
@@ -283,7 +286,7 @@ class Ship{
         this.shipStage=0;
         this.changeStage = 0;
     }
-
+//rumskibet bevægelse med piletasterne
     move(){
         if (keyIsDown(LEFT_ARROW)){
             this.x-=5;
@@ -296,7 +299,7 @@ class Ship{
 
     }
     
-
+//metoden hvorpå der håndteres vore rumskibs bevægelse
     draw(){
         this.move()
         if (this.shipStage == 0){
@@ -312,7 +315,7 @@ class Ship{
             
         }
 
-        
+       //metoden hvorpå vores rumskibs animation bliver håndteret 
         if (this.changeStage==0){
             this.shipStage++;
             if (this.shipStage > 2)
@@ -337,11 +340,9 @@ class Ship{
     fire(){
         bullets[bulletnr]= new Bullet(this.x+22,this.y)
         bulletnr++;
-      //  print(bulletnr)
-      //  print(bullets)
     }
 }
-
+//vores bullet klasse
 class Bullet{
     constructor(x,y){
         this.x = x;
@@ -349,7 +350,7 @@ class Bullet{
         this.hasNotHit = true;
         
     }
-
+//metode for vores bullet som viser vores bullet indtil den har ramt noget
     draw(){
         if(this.hasNotHit){
             fill(255, 255, 255)
@@ -363,6 +364,7 @@ class Bullet{
     }
 
     hasHit(aliens){
+    //Tjek om Bullet har ramt Aliens
         for (let i=0;i<aliens.length;i++){
             if (aliens[i].alive && this.hasNotHit){
                 if (this.x > (aliens[i].x)-3 && this.x < (aliens[i].x)+27
@@ -376,6 +378,7 @@ class Bullet{
     }
 
 hasHit(Barricade){
+//tjek om Bullet har ramt Barricade
         for (let i=0;i<Barricade.length;i++){
             if (Barricade[i].alive && this.hasNotHit){
                 if (this.x > (Barricade[i].x)-3 && this.x < (Barricade[i].x)+27
@@ -390,19 +393,18 @@ hasHit(Barricade){
 
 }
 
-
+//Definer Barricade klassen
 class Barricade {
     constructor(x, y) {
       this.x = x;
       this.y = y;
       this.alive = true;
     }
-  
+  //tegner vores barrikader
     draw() {
       if (this.alive) {
-        // Draw barricade using your barricade images
         image(Barricade_0, this.x, this.y);
-        // You can add more stages for barricade damage if needed
+      
 
       }
     }
